@@ -17,27 +17,40 @@ namespace ConsoleEncode
             // Dec 十進位 0~127 標準的 ASCII 編碼, 128~255 擴展的 ASCII 編碼
 
 
-            // ASCII轉換
-            string str = "我是誰";
+            #region 如果將中文字轉為ASCII 再轉回字串
+            
+            string chineseStrToASCII = "我是誰";
 
-            byte[] bytes = Encoding.ASCII.GetBytes(str);
+            // 得到3個字節 63的bytes 每個字節為 00111111
+            // byte 一個字節範圍 0~255 
+            byte[] chineseBytes = Encoding.ASCII.GetBytes(chineseStrToASCII);
 
-            string someString = Encoding.ASCII.GetString(bytes);
+            // 轉回字串後為 問號
+            string chineseBytesToStr = Encoding.ASCII.GetString(chineseBytes);
 
-            // Unicode 轉換
-            int unicode = 65;
-            char character = (char)unicode;
-            string text = character.ToString();
+            #endregion
 
-            string c = Char.ConvertFromUtf32(65);
+            #region Unicode 轉換
+            int unicodeNum = 65;
 
+            // 轉為Char字符
+            char unicodeNumToChar = (char)unicodeNum;
+            // 將char 轉為字串
+            string charToStr = unicodeNumToChar.ToString();
+
+            // 直接將UTF32 代碼(char 10進位) 轉為字串
+            string utf32ToStr = Char.ConvertFromUtf32(65);
+
+            // 將char 轉為字串
             string asciichar = (Convert.ToChar(65)).ToString();
+            #endregion
 
-            // 如何將文字檔編碼成 ANSI
+            #region 如何將文字檔編碼成 ANSI
             System.Text.Encoding.GetEncoding("big5");
             System.Text.Encoding.GetEncoding(950);
+            #endregion
 
-            //MEMO
+            # region MEMO
             string[] files = new string[] {
                 @"D:\011714\Test\ConsoleTEST\ConsoleTEST\bin\Debug\SUB_FID_01_20210429.TXT",
                 @"D:\011714\Test\ConsoleTEST\ConsoleTEST\bin\Debug\SUB_FID_01_20211201.txt"
@@ -55,10 +68,25 @@ namespace ConsoleEncode
             Encoding big5 = Encoding.GetEncoding(950);
 
             Encoding encode = (fileBytes.Length == big5.GetByteCount(big5.GetString(fileBytes))) ? Encoding.GetEncoding(950) : Encoding.GetEncoding(65001);
+            #endregion
+
 
             char ttt = '\u0058';
             var test1 = big5.GetBytes("一");
+            var t1 = Encoding.Unicode.GetString(test1);
+       
             BitArray a = new BitArray(test1);
+            var t2 = Encoding.Unicode.GetBytes("一");
+            // 順序讀取反過來 先讀 [1] 再讀[2]
+            // 將兩者數字轉為2進位 拆成兩組字節 
+            // 拆成3組 1110xxxx 10xxxxxx 10xxxxxx
+            // 轉為10進位
+            byte[] st = new byte[] { 228, 184, 128 };
+            var sss = Encoding.UTF8.GetString(st);
+
+            var t3 = Encoding.UTF8.GetString(new byte[] { 228, 184, 173 });
+            var t4 = Encoding.Unicode.GetBytes("中");
+
             //'\u6912'
             // ((char)161).ToString()
             //big5.GetBytes("ABC一二三")
